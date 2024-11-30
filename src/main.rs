@@ -1,23 +1,9 @@
-use clap::Parser;
 use serde::Serialize;
+use serde_json;
 use std::env;
 use std::fs;
+use std::io;
 use std::path::Path;
-
-#[derive(clap::ValueEnum, Clone, Debug, Serialize, Default)]
-enum TodoAction {
-    Add,
-    #[default]
-    View,
-    Complete,
-    Delete,
-}
-
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct Args {
-    action: TodoAction,
-}
 
 fn main() {
     let home_dir = env::var("HOME").expect("HOME environment variable not found/set");
@@ -28,32 +14,12 @@ fn main() {
 
     let contents = fs::read_to_string(&file_path).expect("The file could not be read");
 
-    // TODO: Parse the contents to an object using Serde
+    let mut todo_list: Vec<Todo> = serde_json::from_str(&contents).unwrap();
 
     match action {
-        TodoAction::Add => add_todo(),
-        TodoAction::View => view_todo(),
+        TodoAction::Add => add_todo(&mut todo_list),
+        TodoAction::View => view_todo(&todo_list),
         TodoAction::Complete => complete_todo(),
         TodoAction::Delete => delete_todo(),
     }
-}
-
-fn add_todo() {
-    println!("adding todo");
-    todo!()
-}
-
-fn view_todo() {
-    println!("viewing todo");
-    todo!()
-}
-
-fn delete_todo() {
-    println!("deleting todo");
-    todo!()
-}
-
-fn complete_todo() {
-    println!("completing todo");
-    todo!()
 }

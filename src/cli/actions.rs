@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 #[derive(clap::ValueEnum, Clone, Debug, Serialize, Default)]
 pub enum TodoAction {
     Add,

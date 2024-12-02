@@ -1,6 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug)]
+use super::generate_unique_id;
+
+#[derive(Deserialize, Debug, Serialize)]
 pub struct Todo {
     id: Option<u32>,
     title: String,
@@ -9,9 +11,9 @@ pub struct Todo {
 }
 
 impl Todo {
-    pub fn new(id: Option<u32>, title: String, description: Option<String>) -> Self {
+    pub fn new(title: String, description: Option<String>) -> Self {
         Self {
-            id,
+            id: Some(generate_unique_id()),
             title,
             description,
             completed: false,

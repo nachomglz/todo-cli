@@ -1,25 +1,18 @@
-use serde::Serialize;
-use serde_json;
-use std::env;
-use std::fs;
-use std::io;
-use std::path::Path;
+use todo_cli::cli::{parse_args, TodoAction};
+use todo_cli::todo;
+use todo_cli::utils::get_todo_list;
 
 fn main() {
-    let home_dir = env::var("HOME").expect("HOME environment variable not found/set");
-    let home_path = Path::new(&home_dir);
-    let file_path = home_path.join(".todo-cli").join("todo.json");
+    let args = parse_args();
 
-    let action = Args::parse().action;
+    let mut todo_list = get_todo_list();
 
-    let contents = fs::read_to_string(&file_path).expect("The file could not be read");
-
-    let mut todo_list: Vec<Todo> = serde_json::from_str(&contents).unwrap();
-
-    match action {
-        TodoAction::Add => add_todo(&mut todo_list),
-        TodoAction::View => view_todo(&todo_list),
-        TodoAction::Complete => complete_todo(),
-        TodoAction::Delete => delete_todo(),
+    match args.action {
+        TodoAction::Add => todo::add_todo(&mut todo_list),
+        TodoAction::View => todo::view_todo(&todo_list),
+        TodoAction::Complete => todo::complete_todo(),
+        TodoAction::Delete => todo::delete_todo(),
     }
+
+    // reset document
 }
